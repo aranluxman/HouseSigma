@@ -6,7 +6,7 @@ A static Vercel-ready research dashboard for public GTA distressed property sign
 
 - Shows a public distressed-property watchlist for GTA target markets.
 - Includes property photos from public listing/photo sources where available.
-- Lets users load starter houses, edit the address and underwriting assumptions, add a photo URL, and push the custom lead into the watchlist.
+- Lets users load starter houses, edit the address and underwriting assumptions, add a photo URL, and save custom leads in the browser watchlist.
 - Calculates rent, mortgage, HELOC carry, reserves, cash flow, cap rate, and cash-on-cash return in the browser.
 - Includes a copy-ready Claude research prompt for daily deal discovery.
 - Summarizes current public GTA distress and market signals.

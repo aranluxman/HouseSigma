@@ -54,7 +54,9 @@ At the end provide:
 Output format:
 Use a table for the top opportunities, then a short due-diligence checklist for each top property. Mark estimates clearly.`;
 
-let listings = [
+const customListingsStorageKey = "dealSigma.customListings.v1";
+
+const baseListings = [
   {
     id: "brampton-david",
     address: "2 David Street",
@@ -337,6 +339,8 @@ let listings = [
   }
 ];
 
+let listings = mergeStoredListings();
+
 const marketSources = [
   "https://powerofsaleplus.ca/",
   "https://powerofsaleplus.ca/durham.html",
@@ -366,6 +370,37 @@ const percent = new Intl.NumberFormat("en-CA", {
   maximumFractionDigits: 1,
   minimumFractionDigits: 1
 });
+
+function loadStoredCustomListings() {
+  if (typeof localStorage === "undefined") return [];
+
+  try {
+    const parsed = JSON.parse(localStorage.getItem(customListingsStorageKey) || "[]");
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (listing) =>
+        listing &&
+        typeof listing.id === "string" &&
+        listing.id.startsWith("custom-") &&
+        typeof listing.address === "string"
+    );
+  } catch {
+    return [];
+  }
+}
+
+function mergeStoredListings() {
+  return loadStoredCustomListings().reduce(
+    (items, listing) => upsertListing(items, listing),
+    [...baseListings]
+  );
+}
+
+function saveCustomListing(listing) {
+  if (typeof localStorage === "undefined") return;
+  const updated = upsertListing(loadStoredCustomListings(), listing);
+  localStorage.setItem(customListingsStorageKey, JSON.stringify(updated));
+}
 
 const customTemplateIds = [
   "mississauga-doug",
@@ -763,12 +798,13 @@ function bindCustomForm() {
     event.preventDefault();
     const customListing = createCustomListing(Object.fromEntries(new FormData(form)));
     listings = upsertListing(listings, customListing);
+    saveCustomListing(customListing);
     state.selectedId = customListing.id;
     state.city = "all";
     populateFilters();
     render();
     fillCustomForm(customListing);
-    status.textContent = `Added ${customListing.address} to the watchlist.`;
+    status.textContent = `Added ${customListing.address} and saved it in this browser.`;
     document.querySelector("#watchlist").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 }
