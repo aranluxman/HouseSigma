@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="DealSigma GTA tracks public distressed property signals, rental underwriting, and investor opportunities across Greater Toronto Area markets."
+    />
+    <title>DealSigma GTA | Distressed Property Research Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="DealSigma GTA home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 44 44" role="img">
+            <path d="M7 25.5 22 10l15 15.5v12H27V27h-9v10.5H7z" />
+            <path d="M19 16h14v5H22z" />
+          </svg>
+        </span>
+        <span>
+          <strong>DealSigma</strong>
+          <small>GTA distressed property radar</small>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#watchlist">Watchlist</a>
+        <a href="#customize">Customize</a>
+        <a href="#underwriting">Underwriting</a>
+        <a href="#prompt">Claude Prompt</a>
+        <a href="#market">Market Trends</a>
+      </nav>
+      <a class="ghost-button" href="#prompt">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 3h6l1 3h4v15H4V6h4z" />
+          <path d="M8 10h8M8 14h8M8 18h5" />
+        </svg>
+        Copy research prompt
+      </a>
+    </header>
+
+    <main id="top">
+      <section class="hero-shell" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="status-line">Public data scan updated May 16, 2026</p>
+          <h1 id="hero-title">GTA distressed deal scanner for small-scale real estate investors.</h1>
+          <p>
+            A public-data dashboard for finding power-of-sale, as-is, estate, vacant, relisted,
+            and reduced-price opportunities across the GTA, then stress-testing them with rent,
+            mortgage, HELOC, reserve, cap-rate, and cash-flow assumptions.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#watchlist">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h10" />
+              </svg>
+              View current watchlist
+            </a>
+            <a class="secondary-button" href="#automation">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 6v6l4 2" />
+                <circle cx="12" cy="12" r="9" />
+              </svg>
+              Daily automation plan
+            </a>
+          </div>
+        </div>
+        <aside class="scanner-panel" aria-label="Scan summary">
+          <div class="scan-map">
+            <div class="scan-pin pin-a">Brampton</div>
+            <div class="scan-pin pin-b">Durham</div>
+            <div class="scan-pin pin-c">Markham</div>
+            <div class="scan-pin pin-d">Mississauga</div>
+          </div>
+          <div class="metric-strip">
+            <div>
+              <strong id="metric-count">8</strong>
+              <span>active public leads</span>
+            </div>
+            <div>
+              <strong id="metric-positive">1</strong>
+              <span>positive modeled cash flow</span>
+            </div>
+            <div>
+              <strong id="metric-distress">7</strong>
+              <span>power-of-sale signals</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="toolbar-band" aria-label="Filters">
+        <div class="filter-group">
+          <label for="cityFilter">Market</label>
+          <select id="cityFilter">
+            <option value="all">All GTA targets</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="signalFilter">Signal</label>
+          <select id="signalFilter">
+            <option value="all">All distress signals</option>
+            <option value="power of sale">Power of sale</option>
+            <option value="as-is">As-is</option>
+            <option value="price reduced">Price reduced</option>
+            <option value="vacant">Vacant or immediate possession</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="cashFilter">Cash-flow view</label>
+          <select id="cashFilter">
+            <option value="all">Show all</option>
+            <option value="positive">Positive only</option>
+            <option value="near">Near break-even</option>
+          </select>
+        </div>
+        <button class="icon-button" id="resetFilters" type="button" aria-label="Reset filters">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 12a8 8 0 1 0 2.3-5.7" />
+            <path d="M4 4v6h6" />
+          </svg>
+        </button>
+      </section>
+
+      <section class="custom-lab" id="customize" aria-labelledby="customize-title">
+        <div class="section-heading compact">
+          <p>Editable leads</p>
+          <h2 id="customize-title">Change the house, numbers, and photo</h2>
+          <span>
+            Start with the Mississauga townhouse or one of five other leads, then edit the address,
+            price, rent, taxes, fees, photo URL, and distress signals before adding it to the
+            watchlist.
+          </span>
+        </div>
+        <form class="custom-form" id="customLeadForm">
+          <label class="wide">
+            Quick load a house
+            <select id="templateSelect"></select>
+          </label>
+          <label class="wide">
+            Full address
+            <input id="customAddress" name="address" autocomplete="street-address" />
+          </label>
+          <label>
+            City
+            <input id="customCity" name="city" />
+          </label>
+          <label>
+            Property type
+            <input id="customType" name="type" />
+          </label>
+          <label>
+            Asking price
+            <input id="customAskingPrice" name="askingPrice" inputmode="numeric" />
+          </label>
+          <label>
+            Market value
+            <input id="customMarketValue" name="estimatedMarketValue" inputmode="numeric" />
+          </label>
+          <label>
+            Monthly rent
+            <input id="customRent" name="estimatedRent" inputmode="numeric" />
+          </label>
+          <label>
+            Annual taxes
+            <input id="customTaxes" name="taxes" inputmode="numeric" />
+          </label>
+          <label>
+            Condo/POTL fees
+            <input id="customFees" name="condoFees" inputmode="numeric" />
+          </label>
+          <label>
+            Insurance
+            <input id="customInsurance" name="insurance" inputmode="numeric" />
+          </label>
+          <label>
+            Bedrooms
+            <input id="customBedrooms" name="bedrooms" inputmode="numeric" />
+          </label>
+          <label>
+            Baths
+            <input id="customBaths" name="baths" inputmode="numeric" />
+          </label>
+          <label class="wide">
+            Photo URL
+            <input id="customPhoto" name="photoUrl" placeholder="https://..." />
+          </label>
+          <label class="wide">
+            Source URL
+            <input id="customSource" name="source" placeholder="https://..." />
+          </label>
+          <label class="wide">
+            Distress signals
+            <input id="customSignals" name="signals" placeholder="power of sale, as-is, price reduced" />
+          </label>
+          <div class="form-actions wide">
+            <button class="primary-button" type="submit">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Add or update lead
+            </button>
+            <button class="secondary-button" id="loadSelectedLead" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h10" />
+              </svg>
+              Load selected deal
+            </button>
+            <span id="customStatus" role="status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section class="section-grid" id="watchlist" aria-labelledby="watchlist-title">
+        <div class="section-heading">
+          <p>Current leads</p>
+          <h2 id="watchlist-title">Public distressed watchlist</h2>
+          <span>
+            Listings are sourced from public pages and search results. Verify availability,
+            comps, zoning, legal-suite status, and sold data with HouseSigma, REALTOR.ca, a
+            licensed realtor, municipal zoning, and lender due diligence before acting.
+          </span>
+        </div>
+        <div class="deal-grid" id="dealGrid"></div>
+      </section>
+
+      <section class="underwriting-layout" id="underwriting" aria-labelledby="underwriting-title">
+        <div class="underwriting-copy">
+          <p>Transparent model</p>
+          <h2 id="underwriting-title">Investor underwriting assumptions</h2>
+          <p>
+            Every property uses the same base model: 20% down, 3.5% mortgage rate, 30-year
+            amortization, HELOC-funded down payment at 4%, and a 10% gross-rent maintenance
+            and vacancy reserve. Change the sliders to pressure-test the entire watchlist.
+          </p>
+          <div class="sliders">
+            <label>
+              Mortgage rate
+              <span id="mortgageRateLabel">3.5%</span>
+              <input id="mortgageRate" type="range" min="2.5" max="7.5" value="3.5" step="0.1" />
+            </label>
+            <label>
+              HELOC rate
+              <span id="helocRateLabel">4.0%</span>
+              <input id="helocRate" type="range" min="3" max="9" value="4" step="0.1" />
+            </label>
+            <label>
+              Rent stress
+              <span id="rentStressLabel">100%</span>
+              <input id="rentStress" type="range" min="80" max="120" value="100" step="5" />
+            </label>
+          </div>
+        </div>
+        <div class="underwriting-card">
+          <div class="selected-header">
+            <span id="selectedBadge">Top cash flow</span>
+            <h3 id="selectedTitle">2 David Street, Brampton</h3>
+          </div>
+          <div class="selected-photo-slot" id="selectedPhoto"></div>
+          <dl class="analysis-list" id="analysisList"></dl>
+          <div class="support-grid" id="supportGrid"></div>
+        </div>
+      </section>
+
+      <section class="rank-band" aria-labelledby="rank-title">
+        <div class="section-heading compact">
+          <p>Top 5 ranking</p>
+          <h2 id="rank-title">Best opportunities by modeled leverage</h2>
+        </div>
+        <div class="rank-table-wrap">
+          <table class="rank-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Property</th>
+                <th>Distress</th>
+                <th>Cash flow</th>
+                <th>Cap rate</th>
+                <th>Best angle</th>
+              </tr>
+            </thead>
+            <tbody id="rankRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="workflow-section" id="prompt" aria-labelledby="prompt-title">
+        <div class="prompt-card">
+          <div class="section-heading compact">
+            <p>Use with Claude</p>
+            <h2 id="prompt-title">Research prompt for daily deal discovery</h2>
+            <span>
+              This prompt is tuned for a research assistant. It asks for citations and avoids
+              restricted scraping or private-login MLS data.
+            </span>
+          </div>
+          <textarea id="promptText" readonly></textarea>
+          <button class="primary-button" id="copyPrompt" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 8h10v12H8z" />
+              <path d="M6 16H4V4h12v2" />
+            </svg>
+            Copy prompt
+          </button>
+          <p class="copy-status" id="copyStatus" role="status"></p>
+        </div>
+        <div class="runbook">
+          <h3>Daily workflow upgrades</h3>
+          <ul>
+            <li>Connect HouseSigma saved searches and alerts for target cities.</li>
+            <li>Track public price cuts, failed terminations, relists, and long days on market.</li>
+            <li>Overlay CMHC rents, TRREB inventory, and municipal zoning permissions.</li>
+            <li>Calculate NOI, DSCR, cap rate, cash-on-cash, and HELOC carry in one pass.</li>
+            <li>Suppress condos unless rents, fees, and comparables show credible upside.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="market-section" id="market" aria-labelledby="market-title">
+        <div class="section-heading">
+          <p>Market read</p>
+          <h2 id="market-title">GTA distressed market trends</h2>
+          <span>
+            The current pattern is not a blanket fire sale. It is a higher-inventory,
+            longer-marketing-cycle market where power-of-sale pages, price reductions, and
+            relists create negotiation windows in select submarkets.
+          </span>
+        </div>
+        <div class="trend-grid">
+          <article>
+            <h3>Inventory pressure is visible</h3>
+            <p>
+              Power-of-sale directories show the deepest current public counts in Brampton,
+              Durham, Mississauga, and Markham/Richmond Hill. That points to more deal flow in
+              commuter and family-house markets than in prime Toronto cores.
+            </p>
+          </article>
+          <article>
+            <h3>Prices are softer than sellers want</h3>
+            <p>
+              TRREB reported April 2026 sales up month-over-month but average prices still down
+              year-over-year. HouseSigma market reports have also flagged sluggish detached-home
+              sales and elevated property days on market.
+            </p>
+          </article>
+          <article>
+            <h3>Best hunt zones right now</h3>
+            <p>
+              Brampton for distress volume, Oshawa/Ajax/Whitby for rent-to-price ratios,
+              Mississauga for discounted townhouses, and Markham/Vaughan for appreciation-first
+              investors who can tolerate weaker cash flow.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="sources-section" id="automation" aria-labelledby="automation-title">
+        <div class="section-heading compact">
+          <p>Automation</p>
+          <h2 id="automation-title">What the recurring scan will monitor</h2>
+        </div>
+        <div class="source-columns">
+          <div>
+            <h3>Search targets</h3>
+            <p>
+              REALTOR.ca, HouseSigma public pages and saved-alert exports, Power of Sale Plus,
+              PowerOfSaleListings, Zolo, Condos.ca, public broker pages, estate-sale keywords,
+              assignment-sale keywords, and city zoning references.
+            </p>
+          </div>
+          <div>
+            <h3>Output checks</h3>
+            <p>
+              New distress keywords, asking-price changes, terminated/relisted hints, long DOM,
+              market rent movement, zoning conversion clues, and whether any watchlist property
+              crosses the break-even or DSCR threshold.
+            </p>
+          </div>
+          <div>
+            <h3>Data guardrail</h3>
+            <p>
+              The automation should cite every public source and mark private MLS/HouseSigma sold
+              comps as "verify with login" rather than inventing sold prices.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        DealSigma GTA is a research prototype, not financial, legal, mortgage, zoning, or real
+        estate advice. Not affiliated with HouseSigma, REALTOR.ca, TRREB, or any brokerage.
+      </p>
+      <a href="#top">Back to top</a>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
