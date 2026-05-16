@@ -54,7 +54,7 @@ At the end provide:
 Output format:
 Use a table for the top opportunities, then a short due-diligence checklist for each top property. Mark estimates clearly.`;
 
-const customListingsStorageKey = "dealSigma.customListings.v1";
+const customListingsStorageKey = "dealSigma.customListings.v2";
 
 const baseListings = [
   {
